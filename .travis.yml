@@ -14,5 +14,8 @@ env:
 before_script:
   - sudo apt-get install graphicsmagick
   - mysql -e 'create database test;'
-  - npm install -g istanbul
   - npm install -g mocha
+
+notifications:
+  email:
+    - alberto@wejs.org
