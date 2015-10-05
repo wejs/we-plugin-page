@@ -109,6 +109,7 @@ describe('pageFeature', function () {
       .send({
         title: newTitle
       })
+      .expect(200)
       .set('Accept', 'application/json')
       .end(function (err, res) {
         if (err) throw err;
