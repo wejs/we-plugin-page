@@ -1,14 +1,8 @@
 # we-plugin-page
 
-> [write something about your plugin here]
-
-# API
+> Simple we.js page resrouce plugin
 
 
 ## Links
 
 > * We.js site: http://wejs.org
-
-#Copyright and license
-
-Copyright 2013-2015 [your name] <[your email@email]> and contributors , under [the MIT license](LICENSE).
