@@ -1,12 +1,10 @@
 {
   "name": "we-plugin-page",
-  "description": "We.js we-plugin-page plugin",
-  "version": "0.3.2",
+  "description": "We.js page plugin",
+  "version": "1.0.0",
   "main": "plugin.js",
   "scripts": {
-    "lint": "./node_modules/.bin/jshint .",
-    "test": "NODE_ENV=test LOG_LV=info ./node_modules/.bin/mocha test/bootstrap.js test/**/*.test.js",
-    "prepublish": "npm prune"
+    "test": "NODE_ENV=test LOG_LV=info ./node_modules/.bin/mocha test/bootstrap.js test/**/*.test.js"
   },
   "dependencies": {
     "async": "^1.2.0",
@@ -15,22 +13,22 @@
   "devDependencies": {
     "fs-extra": "^0.18.2",
     "istanbul": "^0.3.14",
-    "jshint": "^2.8.0",
     "mocha": "^2.2.5",
     "rimraf": "^2.3.4",
     "supertest": "^1.0.1",
-    "we-core": "^0.3.26",
-    "we-theme-admin-default": "^0.3.1",
-    "we-theme-site-wejs": "^0.3.11",
-    "we-test-tools": "^0.3.4",
-    "we-plugin-file": "^0.3.1"
+    "we-core": "wejs/we-core",
+    "we-test-tools": "wejs/we-test-tools",
+    "we-plugin-file": "wejs/we-plugin-file"
   },
-  "publishConfig": {
-    "registry": "http://registry.npmjs.org"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:wejs/we-plugin-page.git"
-  },
-  "license": "MIT"
+  "repository": "wejs/we-plugin-page",
+  "author": "Alberto Souza <contato@albertosouza.net>",
+  "license": "MIT",
+  "keywords": [
+    "wejs-plugin"
+  ],
+  "wejs": {
+    "dependencies": {
+      "we-plugin-file": true
+    }
+  }
 }
