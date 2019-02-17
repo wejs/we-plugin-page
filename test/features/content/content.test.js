@@ -1,20 +1,20 @@
-var assert = require('assert');
-var request = require('supertest');
-var helpers = require('we-test-tools').helpers;
-var stubs = require('we-test-tools').stubs;
-var _ = require('lodash');
-var http;
-var we;
+const assert = require('assert');
+const request = require('supertest');
+const helpers = require('we-test-tools').helpers;
+const stubs = require('we-test-tools').stubs;
+let _, http, we;
 
 describe('pageFeature', function () {
-  var salvedPage, salvedUser, salvedUserPassword;
-  var authenticatedRequest;
+  let salvedPage, salvedUser, salvedUserPassword;
+  let authenticatedRequest;
 
   before(function (done) {
     http = helpers.getHttp();
     we = helpers.getWe();
 
-    var userStub = stubs.userStub();
+    _ = we.utils._;
+
+    let userStub = stubs.userStub();
     helpers.createUser(userStub, function(err, user) {
       if (err) throw err;
 
@@ -31,10 +31,10 @@ describe('pageFeature', function () {
       })
       .expect(200)
       .set('Accept', 'application/json')
-      .end(function (err, res) {
+      .end(function (err) {
         if (err) throw err;
-        var pageStub = stubs.pageStub(user.id);
-        we.db.models.page.create(pageStub)
+        let pageStub = stubs.pageStub(user.id);
+        we.db.models.content.create(pageStub)
         .then(function (p) {
           salvedPage = p;
           done();
@@ -46,14 +46,14 @@ describe('pageFeature', function () {
   });
 
   describe('find', function () {
-    it('get /page route should find one page', function(done){
+    it('get /content route should find one page', function(done){
       request(http)
-      .get('/page')
+      .get('/content')
       .set('Accept', 'application/json')
       .end(function (err, res) {
         assert.equal(200, res.status);
-        assert(res.body.page);
-        assert( _.isArray(res.body.page) , 'page not is array');
+        assert(res.body.content);
+        assert( _.isArray(res.body.content) , 'page not is array');
         assert(res.body.meta);
 
         done();
@@ -63,49 +63,49 @@ describe('pageFeature', function () {
 
   describe('create', function () {
 
-    it('post /page create one page record', function(done) {
+    it('post /content create one page record', function(done) {
       var pageStub = stubs.pageStub(salvedUser.id);
 
       authenticatedRequest
-      .post('/page')
+      .post('/content')
       .send(pageStub)
       .set('Accept', 'application/json')
       .end(function (err, res) {
         if (err) throw err;
 
         assert.equal(201, res.status);
-        assert(res.body.page);
-        assert(res.body.page[0].title, pageStub.title);
-        assert(res.body.page[0].about, pageStub.about);
-        assert(res.body.page[0].body, pageStub.body);
+        assert(res.body.content);
+        assert(res.body.content.title, pageStub.title);
+        assert(res.body.content.about, pageStub.about);
+        assert(res.body.content.body, pageStub.body);
         done();
       });
     });
   });
 
   describe('findOne', function () {
-    it('get /page/:id should return one page', function(done){
+    it('get /content/:id should return one page', function(done){
       request(http)
-      .get('/page/' + salvedPage.id)
+      .get('/content/' + salvedPage.id)
       .set('Accept', 'application/json')
       .end(function (err, res) {
         if (err) throw err;
         assert.equal(200, res.status);
-        assert(res.body.page);
-        assert(res.body.page[0].title, salvedPage.title);
-        assert(res.body.page[0].about, salvedPage.about);
-        assert(res.body.page[0].body, salvedPage.body);
+        assert(res.body.content);
+        assert(res.body.content.title, salvedPage.title);
+        assert(res.body.content.about, salvedPage.about);
+        assert(res.body.content.body, salvedPage.body);
         done();
       });
     });
   });
 
   describe('update', function () {
-    it('put /page/:id should upate and return page', function(done){
+    it('put /content/:id should upate and return page', function(done){
       var newTitle = 'my new title';
 
       authenticatedRequest
-      .put('/page/' + salvedPage.id)
+      .put('/content/' + salvedPage.id)
       .send({
         title: newTitle
       })
@@ -114,8 +114,9 @@ describe('pageFeature', function () {
       .end(function (err, res) {
         if (err) throw err;
         assert.equal(200, res.status);
-        assert(res.body.page);
-        assert(res.body.page[0].title, newTitle);
+        assert(res.body.content);
+        assert(res.body.content.title, newTitle);
+        assert(res.body.content.id, salvedPage.id);
 
         salvedPage.title = newTitle;
         done();
@@ -124,17 +125,20 @@ describe('pageFeature', function () {
   });
 
   describe('destroy', function () {
-    it('delete /page/:id should delete one page', function(done){
+    it('delete /content/:id should delete one page', function(done){
       var pageStub = stubs.pageStub(salvedUser.id);
-      we.db.models.page.create(pageStub)
+      we.db.models.content.create(pageStub)
       .then(function (p) {
         authenticatedRequest
-        .delete('/page/' + p.id)
+        .delete('/content/' + p.id)
         .set('Accept', 'application/json')
         .end(function (err, res) {
           if (err) throw err;
           assert.equal(204, res.status);
-          we.db.models.page.findById(p.id).then( function(page){
+          we.db.models.content.findOne({
+            where: { id: p.id }
+          })
+          .then( function(page) {
             assert.equal(page, null);
             done();
           })
