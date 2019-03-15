@@ -93,6 +93,7 @@ module.exports = function contentModel(we) {
     options: {
       // title field, for default title record pages
       titleField: 'title',
+      tableName: 'contents',
 
       termFields: {
         tags: {
@@ -132,14 +133,15 @@ module.exports = function contentModel(we) {
       // record method for use with record.[method]
       instanceMethods: {},
       hooks: {
+        beforeValidate(r) {
+          if (!r.highlighted) {
+            r.highlighted = 0;
+          }
+        },
         beforeCreate(r) {
           // create an published content and set its publishedDate:
           if (r.published) {
             r.publishedAt = Date.now();
-          }
-
-          if (!r.highlighted) {
-            r.highlighted = 0;
           }
         },
 
@@ -147,13 +149,6 @@ module.exports = function contentModel(we) {
           if (r.published && !r.publishedAt) {
             // set publishedAt on publish:
             r.publishedAt = Date.now();
-          } else if (!r.published && r.publishedAt) {
-            // reset publishedAt on unpublish
-            r.publishedAt = null;
-          }
-
-          if (!r.highlighted) {
-            r.highlighted = 0;
           }
         }
       }
