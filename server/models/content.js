@@ -122,9 +122,12 @@ module.exports = function contentModel(we) {
       classMethods: {
         // suport to we.js url alias feature
         urlAlias(record) {
+          const part1 = we.utils.stripTagsAndTruncate (
+            record.title, 50
+          );
+
           return {
-            alias: '/' + record.id + '-'+  we.utils
-              .string( record.title ).slugify().s,
+            alias: '/' + record.id + '-' +  part1,
             target: '/content/' + record.id,
           };
         }
